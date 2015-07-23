@@ -8,7 +8,16 @@ initialize();
 
 var port = 8080;
 var ip = "127.0.0.1";
-var server = http.createServer(handler.handleRequest);
+
+// var routes = {
+//   '/classes/messages': require('./request-handler').requestHandler
+//   // ...
+// };
+
+var server = http.createServer(function(request, response){
+  console.log("Serving request type " + request.method + " for url " + request.url);
+  handler.handleRequest(request, response);
+});
 
 if (module.parent) {
   module.exports = server;

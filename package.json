@@ -16,6 +16,6 @@
   },
   "scripts": {
     "test": "mocha test",
-    "start": "node ./web/basic-server.js"
+    "start": "nodemon --debug ./web/basic-server.js"
   }
 }
