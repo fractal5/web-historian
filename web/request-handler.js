@@ -23,6 +23,14 @@ var handleFormRequest = function(url, res) {
       archive.readArchiveFile(url, function(data) {
         helper.sendResponse(res, data, 200);
       });
+    } else {
+      archive.isUrlInList(url, function(urlInList) {
+        if (!urlInList) {
+          archive.addUrlToList(url);
+        }
+      });
+
+      helper.serveAssets(res, "loading.html", 302);
     }
   });
 };
@@ -30,6 +38,8 @@ var handleFormRequest = function(url, res) {
 exports.handleRequest = function (req, res) {
   //res.end(archive.paths.list);
   var parts = urlParser.parse(req.url);
+  console.log("handleRequest url: " + req.url + " parts: " + parts);
+
   if (acceptedPaths[parts.pathname]) {
     if (req.url === "/") {
       if (req.method === 'GET') {

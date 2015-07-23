@@ -30,19 +30,26 @@ exports.initialize = function(pathsObj){
 // Parse into array of URLs, which are passed to the callback.
 exports.readListOfUrls = function(callback){
   fs.readFile(exports.paths.list, function(err, data) {
-    var urls = data.toString().split('\n');
-    callback(urls);
+    var urlArray = data.toString().split('\n');
+    callback(urlArray);
   });
 };
 
 // Is a given URL listed in archives/sites.txt?
-exports.isUrlInList = function(){
+exports.isUrlInList = function(url, callback){
+  exports.readListOfUrls(function(urlArray) {
+    callback(urlArray.indexOf(url) !== -1);
+  });
 };
 
 // Append URL to archives/sites.txt
 // Assumes that higher level caller checked to see if URL
 // is already in list.
-exports.addUrlToList = function(){
+exports.addUrlToList = function(url, callback){
+  fs.appendFile(exports.paths.list, url + "\n", function() {
+    if (callback) callback();
+  });
+
 };
 
 // Our crawling function has already retrieved and saved the URL.
@@ -68,11 +75,11 @@ exports.readArchiveFile = function(url, callback) {
 //    Use the HTTP lib to GET URL data
 //    fs.writeFile the data to archives/sites dir.
 exports.downloadUrls = function(urlArray) {
-  console.log("downloadUrls");
+  // console.log("downloadUrls");
   urlArray.forEach(function(url) {
     httpReq.get(url, function (err, res) {
       var htmlPage = res.buffer.toString();
-      console.log("res: ", res.code, res.headers, res.buffer.toString());
+      // console.log("res: ", res.code, res.headers, res.buffer.toString());
       fs.writeFile(path.join(exports.paths.archivedSites, url), htmlPage);
     });
     

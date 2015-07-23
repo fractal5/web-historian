@@ -17,17 +17,19 @@ exports.sendResponse = function(response, data, statusCode){
 };
 
 // asset: last part of client path
-exports.serveAssets = function(res, asset, callback) {
+exports.serveAssets = function(res, asset, statusCode, callback) {
   // Write some code here that helps serve up your static files!
   // (Static files are things like html (yours or archived from others...),
   // css, or anything that doesn't change often.)
+
+  statusCode = statusCode || 200;
 
   // Full fs path 
   var fullPath = path.join(archive.paths.siteAssets, asset);
 
   fs.readFile(fullPath, function(err, data) {
     // TODO? handle err
-    exports.sendResponse(res, data.toString(), 200);
+    exports.sendResponse(res, data.toString(), statusCode);
   });
 };
 
