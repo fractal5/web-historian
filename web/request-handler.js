@@ -20,7 +20,8 @@ var handleFormRequest = function(url, res) {
   archive.isUrlArchived(url, function(exists) {
     if (exists) {
       console.log("handleFormRequest for " + url + " in archive.");
-      archive.readArchiveFile(url, function(data) {
+      archive.readArchiveFile(url, function(err, data) {
+        // TODO: handle err?
         helper.sendResponse(res, data, 200);
       });
     } else {
@@ -39,6 +40,7 @@ exports.handleRequest = function (req, res) {
   //res.end(archive.paths.list);
   var parts = urlParser.parse(req.url);
   console.log("handleRequest url: " + req.url + " parts: " + parts);
+
 
   if (acceptedPaths[parts.pathname]) {
     if (req.url === "/") {
@@ -64,4 +66,24 @@ exports.handleRequest = function (req, res) {
     helper.sendResponse(res, "Not Found", 404);
   }
 
+  //
+  // BEGINNING OUTLINE OF REFACTOR
+  //
+  // if (req.method === 'GET') {
+    // check the public folder for the requested URL first.
+
+    // if present, return data
+    // if not present
+    //    check to see if it's in the archives folder
+    //    if yes, return data
+    //    if no, was the URL requested but not yet loaded?
+    //      if yes, 302 -> loading.html
+    //      if no, 404
+
+
+  // } else if (req.method === 'POST') {
+
+  // } else {
+  //   helper.send404(res);
+  // }
 };
