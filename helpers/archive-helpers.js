@@ -2,6 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
 var httpReq = require('http-request');
+var Q = require('q');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -66,8 +67,23 @@ exports.isUrlArchived = function(url, callback){
 exports.readArchiveFile = function(url, callback) {
   var fullPath = path.join(exports.paths.archivedSites, url);
   fs.readFile(fullPath, function(err, data) {
-    callback(data.toString());
+    callback(err, data.toString());
   });
+};
+
+exports.readArchiveFileQ = function(url) {
+  var fullPath = path.join(exports.paths.archivedSites, url);
+  var deferred = Q.defer();
+
+  fs.readFile(fullPath, function(err, data) {
+    if (err) {
+      deferred.reject(err);
+    } else {
+      deferred.resolve(data); 
+    }
+  });
+
+  return deferred.promise;
 };
 
 // Q: Is this for the crawler? Y

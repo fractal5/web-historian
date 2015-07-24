@@ -101,7 +101,6 @@ exports.serveAssetsQ = function(res, asset, statusCode, callback) {
       });
 
     });
-  });
 
 };
 
